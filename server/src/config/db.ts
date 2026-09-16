@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import mongoose from 'mongoose';
 
 export const connectDB = async () => {
@@ -5,11 +6,11 @@ export const connectDB = async () => {
   try {
     mongoose.set('strictQuery', true);
     await mongoose.connect(mongoUri, {
-      serverSelectionTimeoutMS: 2000,
+      serverSelectionTimeoutMS: 5000,
     });
-    console.log(`[MongoDB] Connected successfully to database`);
+    console.log(`✅ [MongoDB Atlas] Connected successfully to cloud database!`);
   } catch (error) {
-    console.warn(`[MongoDB] Notice: Could not connect to local MongoDB (${(error as Error).message}).`);
-    console.log(`[Storage] Falling back seamlessly to In-Memory & Local Database Sync. The API will work seamlessly!`);
+    console.warn(`[MongoDB] Notice: ${(error as Error).message}`);
+    console.log(`[Storage] Seamless In-Memory & Local Database Sync active.`);
   }
 };
