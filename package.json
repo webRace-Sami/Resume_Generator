@@ -1,0 +1,21 @@
+{
+  "name": "resume-generator-fullstack",
+  "version": "1.0.0",
+  "description": "Full-Stack MERN + TypeScript + Vite + Android Resume & CV Studio",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
+    "dev:client": "npm run dev --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "build": "npm run build --prefix client && npm run build --prefix server",
+    "build:client": "npm run build --prefix client",
+    "build:server": "npm run build --prefix server",
+    "start": "npm start --prefix server",
+    "android:sync": "npm run build:client && npx cap sync android",
+    "android:open": "npx cap open android"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.1",
+    "@capacitor/core": "^7.0.1",
+    "concurrently": "^9.1.2"
+  }
+}
