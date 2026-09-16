@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ResumeData, ResumeStyle } from './types/resume';
 import { SAMPLE_PROFILES, EMPTY_RESUME } from './data/samples';
 import { saveResumeToStorage, loadResumeFromStorage, syncResumeWithBackend } from './services/apiService';
@@ -9,7 +9,7 @@ import { TemplateGallery } from './components/TemplateGallery';
 import { ResumeRenderer } from './components/templates/ResumeRenderer';
 import { LiveEditorToolbar } from './components/LiveEditorToolbar';
 import { ResumeModal } from './components/ResumeModal';
-import { Layers, Sparkles, Check, Download, Smartphone, ArrowDown } from 'lucide-react';
+import { Layers, Sparkles, Check } from 'lucide-react';
 
 export function App() {
   // Initialize resume from storage or first sample profile
@@ -24,33 +24,47 @@ export function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
   const [downloadProgressText, setDownloadProgressText] = useState('');
-  const [zoomLevel, setZoomLevel] = useState(0.95);
+  const [zoomLevel, setZoomLevel] = useState(1.0);
   const [saveToast, setSaveToast] = useState(false);
 
   const templatesSectionRef = useRef<HTMLDivElement>(null);
   const previewSectionRef = useRef<HTMLDivElement>(null);
+  const previewContainerRef = useRef<HTMLDivElement>(null);
+
+  // Auto-fit function calculating optimal zoom based on device screen width
+  const calculateOptimalZoom = useCallback(() => {
+    if (typeof window === 'undefined') return 1.0;
+    const containerWidth = previewContainerRef.current?.clientWidth || window.innerWidth;
+    // Standard A4 width is 794px (210mm)
+    const availableWidth = containerWidth - 32; // subtracting horizontal padding
+    const fitScale = Math.min(1.0, availableWidth / 794);
+    return Math.max(0.35, parseFloat(fitScale.toFixed(2)));
+  }, []);
+
+  // Fit to screen handler
+  const handleFitToScreen = () => {
+    const optimal = calculateOptimalZoom();
+    setZoomLevel(optimal);
+  };
+
+  // Adjust zoom for devices on initial load & resize
+  useEffect(() => {
+    const handleResize = () => {
+      const optimal = calculateOptimalZoom();
+      setZoomLevel(optimal);
+    };
+
+    // Initial calculation
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [calculateOptimalZoom]);
 
   // Auto-save to LocalStorage whenever resume changes
   useEffect(() => {
     saveResumeToStorage(resume);
   }, [resume]);
-
-  // Adjust zoom for mobile screens automatically
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 640) {
-        setZoomLevel(0.44); // Scale down nicely for mobile viewports
-      } else if (width < 1024) {
-        setZoomLevel(0.72);
-      } else {
-        setZoomLevel(0.95);
-      }
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   // Save updated resume
   const handleSaveResume = (updated: ResumeData) => {
@@ -109,7 +123,7 @@ export function App() {
 
     const filename = `${resume.personalInfo.fullName ? resume.personalInfo.fullName.replace(/\s+/g, '_') : 'Resume'}_CV.pdf`;
 
-    const success = await exportResumeToPDF('resume-document-to-export', {
+    await exportResumeToPDF('resume-document-to-export', {
       filename,
       onProgress: (_prog, msg) => setDownloadProgressText(msg),
     });
@@ -122,8 +136,11 @@ export function App() {
     templatesSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Height compensation for scaled A4 preview (A4 height ~1123px)
+  const scaledHeight = 1123 * zoomLevel;
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-white">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-white w-full overflow-x-hidden">
       {/* Toast Notification */}
       {saveToast && (
         <div className="fixed bottom-6 right-6 z-50 bg-emerald-500 text-slate-950 px-4 py-2.5 rounded-xl font-bold text-xs shadow-xl flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4">
@@ -148,16 +165,16 @@ export function App() {
       {/* 10 Templates Selector Gallery Section */}
       <section
         ref={templatesSectionRef}
-        className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 border-t border-slate-850 no-print"
+        className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 border-t border-slate-850 no-print"
       >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 sm:mb-6">
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+            <h2 className="text-lg sm:text-2xl font-bold text-white flex items-center gap-2">
               <Layers className="w-5 h-5 text-cyan-400" />
               <span>Choose From 10 Professional CV & Resume Layouts</span>
             </h2>
             <p className="text-xs text-slate-400 mt-1">
-              Select any design below — your data is automatically preserved across all layouts.
+              Select any design below — your information stays completely intact across all templates.
             </p>
           </div>
 
@@ -189,20 +206,31 @@ export function App() {
           downloadProgressText={downloadProgressText}
           zoomLevel={zoomLevel}
           onZoomChange={setZoomLevel}
+          onFitToScreen={handleFitToScreen}
           onSelectTemplate={handleSelectTemplate}
         />
       </div>
 
-      {/* Live Resume Paper Preview Area */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-2 sm:px-6 py-6 flex flex-col items-center justify-start overflow-x-auto">
+      {/* Responsive Live Resume Paper Container */}
+      <main
+        ref={previewContainerRef}
+        className="flex-1 w-full max-w-7xl mx-auto px-2 sm:px-6 py-4 flex flex-col items-center justify-start overflow-hidden"
+      >
         <div
-          className="transition-transform duration-200 origin-top flex justify-center w-full"
+          className="w-full flex justify-center items-start overflow-hidden"
           style={{
-            transform: `scale(${zoomLevel})`,
-            marginBottom: zoomLevel < 1 ? `-${(1 - zoomLevel) * 297 * 3.78}px` : '0px',
+            minHeight: `${scaledHeight + 40}px`,
           }}
         >
-          <ResumeRenderer resume={resume} elementId="resume-document-to-export" />
+          <div
+            className="transition-transform duration-200 origin-top flex justify-center shrink-0"
+            style={{
+              transform: `scale(${zoomLevel})`,
+              width: '794px', // 210mm in standard pixels
+            }}
+          >
+            <ResumeRenderer resume={resume} elementId="resume-document-to-export" />
+          </div>
         </div>
       </main>
 
@@ -216,8 +244,8 @@ export function App() {
       />
 
       {/* Footer */}
-      <footer className="w-full border-t border-slate-850 py-8 px-4 text-center text-xs text-slate-500 space-y-2 no-print bg-slate-950">
-        <div className="flex items-center justify-center gap-4 text-slate-400 font-medium">
+      <footer className="w-full border-t border-slate-850 py-6 sm:py-8 px-4 text-center text-xs text-slate-500 space-y-2 no-print bg-slate-950">
+        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-slate-400 font-medium">
           <button type="button" onClick={() => setIsModalOpen(true)} className="hover:text-white">
             Generate / Edit Data
           </button>
