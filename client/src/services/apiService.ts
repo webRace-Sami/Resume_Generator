@@ -3,6 +3,11 @@ import { ResumeData } from '../types/resume';
 const LOCAL_STORAGE_KEY = 'resumegenerator_active_resume';
 const SAVED_LIST_KEY = 'resumegenerator_saved_list';
 
+// Supports custom deployed backend URL (Render) or local proxy fallback
+const API_BASE_URL = import.meta.env.VITE_API_URL
+  ? import.meta.env.VITE_API_URL.replace(/\/+$/, '')
+  : '';
+
 export const saveResumeToStorage = (resume: ResumeData): void => {
   try {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(resume));
@@ -50,7 +55,8 @@ export const loadSavedListFromStorage = (): ResumeData[] => {
 export const syncResumeWithBackend = async (resume: ResumeData): Promise<ResumeData | null> => {
   try {
     const isUpdate = resume._id || resume.id;
-    const url = isUpdate ? `/api/resumes/${resume._id || resume.id}` : '/api/resumes';
+    const path = isUpdate ? `/api/resumes/${resume._id || resume.id}` : '/api/resumes';
+    const url = `${API_BASE_URL}${path}`;
     const method = isUpdate ? 'PUT' : 'POST';
 
     const response = await fetch(url, {
