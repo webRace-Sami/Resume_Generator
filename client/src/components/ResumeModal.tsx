@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ResumeData, ExperienceItem, EducationItem, SkillCategory, ProjectItem, CertificationItem, LanguageItem } from '../types/resume';
 import { SAMPLE_PROFILES, EMPTY_RESUME } from '../data/samples';
+import { processImageFile, ACCEPTED_IMAGE_EXTENSIONS } from '../services/imageUtils';
 import {
   X,
   User,
@@ -18,6 +19,9 @@ import {
   RefreshCw,
   Layers,
   Wand2,
+  Image as ImageIcon,
+  Loader2,
+  AlertCircle,
 } from 'lucide-react';
 
 interface ResumeModalProps {
@@ -38,11 +42,13 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
   const [formData, setFormData] = useState<ResumeData>(resume);
   const [activeTab, setActiveTab] = useState<string>('personal');
   const [isPhotoUploading, setIsPhotoUploading] = useState(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
 
   // Sync state when modal opens
   React.useEffect(() => {
     if (isOpen) {
       setFormData(resume);
+      setPhotoError(null);
     }
   }, [isOpen, resume]);
 
@@ -59,18 +65,23 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
     }));
   };
 
-  // Photo Upload Handler (FileReader base64)
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Robust Photo Upload Handler supporting JPG, JPEG, PNG, WEBP, SVG, GIF, AVIF, HEIC, etc.
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setIsPhotoUploading(true);
-      const reader = new FileReader();
-      reader.onload = (uploadEvent) => {
-        const base64 = uploadEvent.target?.result as string;
-        handlePersonalChange('photoUrl', base64);
+      try {
+        setIsPhotoUploading(true);
+        setPhotoError(null);
+        const processedBase64 = await processImageFile(file);
+        handlePersonalChange('photoUrl', processedBase64);
+      } catch (err: any) {
+        console.error('Error uploading image:', err);
+        setPhotoError(err.message || 'Could not process image file. Please try another image.');
+      } finally {
         setIsPhotoUploading(false);
-      };
-      reader.readAsDataURL(file);
+        // Reset input value so selecting the same file again triggers onChange
+        e.target.value = '';
+      }
     }
   };
 
@@ -526,38 +537,96 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
                 </div>
 
                 {/* Photo Upload & Preview */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Profile Photo (Optional)</label>
-                  <div className="flex items-center gap-3">
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-semibold text-slate-300">
+                      Profile Photo (Optional)
+                    </label>
+                    <span className="text-[10px] text-cyan-400 bg-cyan-950/60 border border-cyan-800/50 px-2 py-0.5 rounded-full font-medium">
+                      All formats: JPG, JPEG, PNG, WEBP, SVG, GIF, etc.
+                    </span>
+                  </div>
+
+                  {photoError && (
+                    <div className="p-2 rounded-lg bg-red-950/50 border border-red-800/80 text-xs text-red-300 flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+                      <span>{photoError}</span>
+                    </div>
+                  )}
+
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
                     {formData.personalInfo.photoUrl ? (
-                      <div className="relative">
-                        <img
-                          src={formData.personalInfo.photoUrl}
-                          alt="Avatar"
-                          className="w-12 h-12 rounded-xl object-cover border border-cyan-500"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handlePersonalChange('photoUrl', '')}
-                          className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
+                      <div className="flex items-center gap-3 bg-slate-800/70 p-2 rounded-xl border border-slate-750">
+                        <div className="relative group">
+                          <img
+                            src={formData.personalInfo.photoUrl}
+                            alt="Avatar"
+                            className="w-12 h-12 rounded-xl object-cover border-2 border-cyan-500 shadow-md"
+                          />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <label className="cursor-pointer px-2.5 py-1.5 bg-slate-750 hover:bg-slate-700 border border-slate-700 rounded-lg text-xs flex items-center gap-1.5 text-cyan-400 font-medium transition">
+                            {isPhotoUploading ? (
+                              <>
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                <span>Optimizing...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Upload className="w-3.5 h-3.5" />
+                                <span>Change Photo</span>
+                              </>
+                            )}
+                            <input
+                              type="file"
+                              accept={ACCEPTED_IMAGE_EXTENSIONS}
+                              onChange={handlePhotoUpload}
+                              className="hidden"
+                              disabled={isPhotoUploading}
+                            />
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => handlePersonalChange('photoUrl', '')}
+                            className="px-2.5 py-1.5 bg-red-950/40 hover:bg-red-900/60 border border-red-800/60 text-red-400 rounded-lg text-xs flex items-center gap-1 font-medium transition"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Remove</span>
+                          </button>
+                        </div>
                       </div>
                     ) : (
-                      <label className="cursor-pointer px-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs flex items-center gap-2 text-slate-300 font-medium">
-                        <Upload className="w-4 h-4 text-cyan-400" />
-                        <span>{isPhotoUploading ? 'Uploading...' : 'Upload Image'}</span>
-                        <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
+                      <label className="cursor-pointer px-4 py-2.5 bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-cyan-500/50 rounded-xl text-xs flex items-center justify-center gap-2 text-slate-200 font-semibold transition group shrink-0">
+                        {isPhotoUploading ? (
+                          <>
+                            <Loader2 className="w-4 h-4 text-cyan-400 animate-spin" />
+                            <span>Optimizing Image...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="w-4 h-4 text-cyan-400 group-hover:-translate-y-0.5 transition-transform" />
+                            <span>Upload Image / Photo</span>
+                          </>
+                        )}
+                        <input
+                          type="file"
+                          accept={ACCEPTED_IMAGE_EXTENSIONS}
+                          onChange={handlePhotoUpload}
+                          className="hidden"
+                          disabled={isPhotoUploading}
+                        />
                       </label>
                     )}
-                    <input
-                      type="text"
-                      value={formData.personalInfo.photoUrl || ''}
-                      onChange={(e) => handlePersonalChange('photoUrl', e.target.value)}
-                      placeholder="Or paste photo URL..."
-                      className="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500"
-                    />
+
+                    <div className="flex-1 flex items-center relative">
+                      <input
+                        type="text"
+                        value={formData.personalInfo.photoUrl || ''}
+                        onChange={(e) => handlePersonalChange('photoUrl', e.target.value)}
+                        placeholder="Or paste direct image URL (https://...)"
+                        className="w-full bg-slate-800 border border-slate-750 rounded-xl px-3 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

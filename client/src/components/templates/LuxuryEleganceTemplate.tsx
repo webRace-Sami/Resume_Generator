@@ -23,14 +23,23 @@ export const LuxuryEleganceTemplate: React.FC<{ resume: ResumeData }> = ({ resum
 
   return (
     <div className={`w-full bg-[#fcfbf9] text-stone-800 font-["Playfair_Display",Georgia,serif] ${space.padding} border-8 border-double border-stone-200 flex flex-col justify-start`}>
-      {/* Monogram Top Header */}
+      {/* Monogram / Portrait Top Header */}
       <div className="text-center pb-5 border-b border-stone-300 relative">
-        <div
-          className="w-14 h-14 mx-auto rounded-full flex items-center justify-center font-bold text-lg text-white mb-2 shadow-sm"
-          style={{ backgroundColor: color }}
-        >
-          {initials}
-        </div>
+        {style.showPhoto && personalInfo.photoUrl ? (
+          <img
+            src={personalInfo.photoUrl}
+            alt={personalInfo.fullName || 'Portrait'}
+            className="w-16 h-16 mx-auto rounded-full object-cover mb-2 border-2 shadow-sm"
+            style={{ borderColor: color }}
+          />
+        ) : (
+          <div
+            className="w-14 h-14 mx-auto rounded-full flex items-center justify-center font-bold text-lg text-white mb-2 shadow-sm"
+            style={{ backgroundColor: color }}
+          >
+            {initials}
+          </div>
+        )}
 
         <h1 className={`${size.name} font-normal tracking-wide text-stone-900 uppercase font-serif`}>
           {personalInfo.fullName || 'Candidate Name'}

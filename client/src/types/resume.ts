@@ -106,7 +106,17 @@ export interface TemplateDefinition {
   name: string;
   tagline: string;
   description: string;
-  category: 'Modern' | 'Executive' | 'Tech' | 'Academic' | 'Creative' | 'ATS Minimal';
+  category:
+    | 'Modern'
+    | 'Executive'
+    | 'Tech'
+    | 'Academic'
+    | 'Creative'
+    | 'ATS Minimal'
+    | 'Students & Entry'
+    | 'Operations'
+    | 'Finance & Audit'
+    | 'Admin & Office';
   badgeText: string;
   previewGradient: string;
   supportsPhoto: boolean;
@@ -141,6 +151,56 @@ export const TEMPLATES: TemplateDefinition[] = [
     category: 'Modern',
     badgeText: 'Most Popular',
     previewGradient: 'from-sky-500 to-indigo-600',
+    supportsPhoto: true,
+  },
+  {
+    id: 'fresh-graduate-student',
+    name: 'Fresh Graduate & Student',
+    tagline: 'Education & Academic projects first format',
+    description: 'Tailored for university students, recent graduates, and interns showcasing degrees, GPA, capstone projects, and campus leadership.',
+    category: 'Students & Entry',
+    badgeText: 'Fresh Talent',
+    previewGradient: 'from-cyan-500 to-blue-600',
+    supportsPhoto: true,
+  },
+  {
+    id: 'supply-chain-logistics',
+    name: 'Supply Chain & Logistics',
+    tagline: 'Operations, ERP, procurement & freight metrics',
+    description: 'Structured layout for supply chain managers, logistics coordinators, and warehouse supervisors with KPI callouts and APICS/CSCP badges.',
+    category: 'Operations',
+    badgeText: 'SCM Standard',
+    previewGradient: 'from-teal-600 to-slate-900',
+    supportsPhoto: true,
+  },
+  {
+    id: 'auditor-compliance',
+    name: 'Auditor & Risk Compliance',
+    tagline: 'SOX, GAAP, IFRS & Internal Audit precision grid',
+    description: 'Engineered for financial auditors, risk advisors, and compliance officers highlighting internal controls, audit engagements, and CPA credentials.',
+    category: 'Finance & Audit',
+    badgeText: 'Audit Precision',
+    previewGradient: 'from-blue-900 to-slate-800',
+    supportsPhoto: true,
+  },
+  {
+    id: 'computer-operator',
+    name: 'Computer Operator & IT',
+    tagline: 'Hardware, server maintenance & batch operations',
+    description: 'Designed for computer operators, data processing clerks, and IT support technicians with system diagnostics and uptime focus.',
+    category: 'Tech',
+    badgeText: 'IT Operations',
+    previewGradient: 'from-sky-600 to-slate-900',
+    supportsPhoto: true,
+  },
+  {
+    id: 'ms-office-executive',
+    name: 'MS Office & Admin Specialist',
+    tagline: 'Advanced Excel, Word, PPT & Office leadership',
+    description: 'Showcases Microsoft Office suite mastery (Excel Pivot/VLOOKUP, PowerPoint, Access), typing speed (WPM), and executive administration.',
+    category: 'Admin & Office',
+    badgeText: 'Office Pro',
+    previewGradient: 'from-blue-600 to-indigo-700',
     supportsPhoto: true,
   },
   {

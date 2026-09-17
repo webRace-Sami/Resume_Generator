@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ResumeData, FontFamilyOption, FontSizeOption, SpacingOption } from '../types/resume';
 import { ColorPicker } from './ColorPicker';
+import { processImageFile, ACCEPTED_IMAGE_EXTENSIONS } from '../services/imageUtils';
 import {
   Edit3,
   FileDown,
@@ -11,6 +12,7 @@ import {
   Image as ImageIcon,
   Loader2,
   Maximize,
+  Upload,
 } from 'lucide-react';
 
 interface LiveEditorToolbarProps {
@@ -24,6 +26,7 @@ interface LiveEditorToolbarProps {
   onZoomChange: (zoom: number) => void;
   onFitToScreen: () => void;
   onSelectTemplate: (templateId: string) => void;
+  onUpdatePhoto?: (photoUrl: string) => void;
 }
 
 export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
@@ -36,9 +39,11 @@ export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
   zoomLevel,
   onZoomChange,
   onFitToScreen,
+  onUpdatePhoto,
 }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showTypography, setShowTypography] = useState(false);
+  const [isPhotoUploading, setIsPhotoUploading] = useState(false);
 
   const fonts: FontFamilyOption[] = [
     'Inter',
@@ -52,6 +57,23 @@ export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleQuickPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && onUpdatePhoto) {
+      try {
+        setIsPhotoUploading(true);
+        const processed = await processImageFile(file);
+        onUpdatePhoto(processed);
+        onChangeStyle({ showPhoto: true });
+      } catch (err) {
+        console.error('Photo upload failed:', err);
+      } finally {
+        setIsPhotoUploading(false);
+        e.target.value = '';
+      }
+    }
   };
 
   return (
@@ -187,19 +209,41 @@ export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
             )}
           </div>
 
-          {/* Photo quick toggle */}
-          <button
-            type="button"
-            onClick={() => onChangeStyle({ showPhoto: !resume.style.showPhoto })}
-            title="Toggle Profile Photo"
-            className={`p-2 rounded-lg sm:rounded-xl border text-xs flex items-center transition shrink-0 ${
-              resume.style.showPhoto
-                ? 'bg-slate-800 text-cyan-400 border-slate-700'
-                : 'bg-slate-850 text-slate-500 border-slate-800 hover:text-slate-300'
-            }`}
-          >
-            <ImageIcon className="w-3.5 h-3.5" />
-          </button>
+          {/* Photo quick upload & toggle */}
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              type="button"
+              onClick={() => onChangeStyle({ showPhoto: !resume.style.showPhoto })}
+              title={resume.style.showPhoto ? "Hide Profile Photo" : "Show Profile Photo"}
+              className={`p-2 rounded-lg sm:rounded-xl border text-xs flex items-center transition ${
+                resume.style.showPhoto
+                  ? 'bg-slate-800 text-cyan-400 border-slate-700'
+                  : 'bg-slate-850 text-slate-500 border-slate-800 hover:text-slate-300'
+              }`}
+            >
+              <ImageIcon className="w-3.5 h-3.5" />
+            </button>
+
+            {onUpdatePhoto && (
+              <label
+                className="p-2 rounded-lg sm:rounded-xl border border-slate-800 bg-slate-850 hover:bg-slate-800 hover:border-slate-700 text-slate-400 hover:text-cyan-400 text-xs flex items-center cursor-pointer transition"
+                title="Upload/Replace Photo (JPG, JPEG, PNG, WEBP, SVG, etc.)"
+              >
+                {isPhotoUploading ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-400" />
+                ) : (
+                  <Upload className="w-3.5 h-3.5" />
+                )}
+                <input
+                  type="file"
+                  accept={ACCEPTED_IMAGE_EXTENSIONS}
+                  onChange={handleQuickPhotoUpload}
+                  className="hidden"
+                  disabled={isPhotoUploading}
+                />
+              </label>
+            )}
+          </div>
         </div>
 
         {/* Center: Zoom & Auto-Fit Controls */}

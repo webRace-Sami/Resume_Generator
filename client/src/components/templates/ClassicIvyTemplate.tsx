@@ -12,6 +12,16 @@ export const ClassicIvyTemplate: React.FC<{ resume: ResumeData }> = ({ resume })
     <div className={`w-full bg-white text-stone-900 font-["Merriweather",Georgia,serif] ${space.padding} flex flex-col justify-start`}>
       {/* Header - Centered Harvard / Ivy League Style */}
       <div className={`text-center border-b pb-3 ${space.marginB}`} style={{ borderColor: style.isMonochrome ? '#1c1917' : color }}>
+        {style.showPhoto && personalInfo.photoUrl && (
+          <div className="flex justify-center mb-2.5">
+            <img
+              src={personalInfo.photoUrl}
+              alt={personalInfo.fullName || 'Portrait'}
+              className="w-18 h-18 rounded-full object-cover border-2 shadow-sm"
+              style={{ borderColor: color }}
+            />
+          </div>
+        )}
         <h1 className={`${size.name} font-normal tracking-wide text-stone-900 uppercase font-["Playfair_Display",Georgia,serif]`}>
           {personalInfo.fullName || 'Your Full Name'}
         </h1>

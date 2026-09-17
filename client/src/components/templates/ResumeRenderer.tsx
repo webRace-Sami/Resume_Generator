@@ -10,6 +10,11 @@ import { MonochromeAtsTemplate } from './MonochromeAtsTemplate';
 import { LuxuryEleganceTemplate } from './LuxuryEleganceTemplate';
 import { AcademicCvTemplate } from './AcademicCvTemplate';
 import { StartupDynamicTemplate } from './StartupDynamicTemplate';
+import { FreshGraduateStudentTemplate } from './FreshGraduateStudentTemplate';
+import { SupplyChainLogisticsTemplate } from './SupplyChainLogisticsTemplate';
+import { AuditorComplianceTemplate } from './AuditorComplianceTemplate';
+import { ComputerOperatorTemplate } from './ComputerOperatorTemplate';
+import { MsOfficeExecutiveTemplate } from './MsOfficeExecutiveTemplate';
 
 export const ResumeRenderer: React.FC<{ resume: ResumeData; elementId?: string }> = ({
   resume,
@@ -17,6 +22,16 @@ export const ResumeRenderer: React.FC<{ resume: ResumeData; elementId?: string }
 }) => {
   const renderTemplate = () => {
     switch (resume.templateId) {
+      case 'fresh-graduate-student':
+        return <FreshGraduateStudentTemplate resume={resume} />;
+      case 'supply-chain-logistics':
+        return <SupplyChainLogisticsTemplate resume={resume} />;
+      case 'auditor-compliance':
+        return <AuditorComplianceTemplate resume={resume} />;
+      case 'computer-operator':
+        return <ComputerOperatorTemplate resume={resume} />;
+      case 'ms-office-executive':
+        return <MsOfficeExecutiveTemplate resume={resume} />;
       case 'classic-ivy':
         return <ClassicIvyTemplate resume={resume} />;
       case 'tech-minimalist':

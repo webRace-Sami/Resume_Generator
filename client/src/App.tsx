@@ -75,6 +75,28 @@ export function App() {
     setTimeout(() => setSaveToast(false), 2500);
   };
 
+  // Quick photo update handler
+  const handleUpdatePhoto = (photoUrl: string) => {
+    setResume((prev) => {
+      const updated: ResumeData = {
+        ...prev,
+        personalInfo: {
+          ...prev.personalInfo,
+          photoUrl,
+        },
+        style: {
+          ...prev.style,
+          showPhoto: true,
+        },
+      };
+      saveResumeToStorage(updated);
+      syncResumeWithBackend(updated);
+      return updated;
+    });
+    setSaveToast(true);
+    setTimeout(() => setSaveToast(false), 2500);
+  };
+
   // Change specific styling property (color, font, monochrome, spacing, etc.)
   const handleChangeStyle = (newStyle: Partial<ResumeStyle>) => {
     setResume((prev) => {
@@ -162,7 +184,7 @@ export function App() {
         onScrollToTemplates={scrollToTemplates}
       />
 
-      {/* 10 Templates Selector Gallery Section */}
+      {/* 15 Templates Selector Gallery Section */}
       <section
         ref={templatesSectionRef}
         className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 border-t border-slate-850 no-print"
@@ -171,7 +193,7 @@ export function App() {
           <div>
             <h2 className="text-lg sm:text-2xl font-bold text-white flex items-center gap-2">
               <Layers className="w-5 h-5 text-cyan-400" />
-              <span>Choose From 10 Professional CV & Resume Layouts</span>
+              <span>Choose From 15 Professional CV & Resume Layouts</span>
             </h2>
             <p className="text-xs text-slate-400 mt-1">
               Select any design below — your information stays completely intact across all templates.
@@ -208,6 +230,7 @@ export function App() {
           onZoomChange={setZoomLevel}
           onFitToScreen={handleFitToScreen}
           onSelectTemplate={handleSelectTemplate}
+          onUpdatePhoto={handleUpdatePhoto}
         />
       </div>
 
@@ -251,7 +274,7 @@ export function App() {
           </button>
           <span>•</span>
           <button type="button" onClick={scrollToTemplates} className="hover:text-white">
-            10 Templates
+            15 Templates
           </button>
           <span>•</span>
           <button type="button" onClick={handleDownloadPdf} className="hover:text-white text-cyan-400 font-bold">

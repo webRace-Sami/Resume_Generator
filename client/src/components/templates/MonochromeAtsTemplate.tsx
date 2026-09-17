@@ -10,35 +10,45 @@ export const MonochromeAtsTemplate: React.FC<{ resume: ResumeData }> = ({ resume
   return (
     <div className={`w-full bg-white text-black font-["Inter",Arial,sans-serif] ${space.padding} flex flex-col justify-start`}>
       {/* ATS Standard Header */}
-      <div className={`text-center border-b-2 border-black pb-2 ${space.marginB}`}>
-        <h1 className={`${size.name} font-bold text-black uppercase tracking-tight`}>
-          {personalInfo.fullName || 'Candidate Name'}
-        </h1>
-        {personalInfo.jobTitle && (
-          <p className={`${size.title} font-semibold text-black mt-0.5`}>
-            {personalInfo.jobTitle}
-          </p>
-        )}
+      <div className={`border-b-2 border-black pb-2 ${space.marginB} ${style.showPhoto && personalInfo.photoUrl ? 'flex items-center justify-between gap-4 text-left' : 'text-center'}`}>
+        <div className={style.showPhoto && personalInfo.photoUrl ? 'flex-1' : ''}>
+          <h1 className={`${size.name} font-bold text-black uppercase tracking-tight`}>
+            {personalInfo.fullName || 'Candidate Name'}
+          </h1>
+          {personalInfo.jobTitle && (
+            <p className={`${size.title} font-semibold text-black mt-0.5`}>
+              {personalInfo.jobTitle}
+            </p>
+          )}
 
-        <div className={`flex flex-wrap justify-center items-center gap-x-2 gap-y-0.5 mt-1.5 text-black ${size.small}`}>
-          {personalInfo.location && <span>{personalInfo.location}</span>}
-          {personalInfo.location && (personalInfo.phone || personalInfo.email) && <span>|</span>}
-          {personalInfo.phone && <span>{personalInfo.phone}</span>}
-          {personalInfo.phone && personalInfo.email && <span>|</span>}
-          {personalInfo.email && <span>{personalInfo.email}</span>}
-          {personalInfo.linkedin && (
-            <>
-              <span>|</span>
-              <span>{personalInfo.linkedin.replace(/^https?:\/\//, '')}</span>
-            </>
-          )}
-          {personalInfo.website && (
-            <>
-              <span>|</span>
-              <span>{personalInfo.website.replace(/^https?:\/\//, '')}</span>
-            </>
-          )}
+          <div className={`flex flex-wrap ${style.showPhoto && personalInfo.photoUrl ? 'justify-start' : 'justify-center'} items-center gap-x-2 gap-y-0.5 mt-1.5 text-black ${size.small}`}>
+            {personalInfo.location && <span>{personalInfo.location}</span>}
+            {personalInfo.location && (personalInfo.phone || personalInfo.email) && <span>|</span>}
+            {personalInfo.phone && <span>{personalInfo.phone}</span>}
+            {personalInfo.phone && personalInfo.email && <span>|</span>}
+            {personalInfo.email && <span>{personalInfo.email}</span>}
+            {personalInfo.linkedin && (
+              <>
+                <span>|</span>
+                <span>{personalInfo.linkedin.replace(/^https?:\/\//, '')}</span>
+              </>
+            )}
+            {personalInfo.website && (
+              <>
+                <span>|</span>
+                <span>{personalInfo.website.replace(/^https?:\/\//, '')}</span>
+              </>
+            )}
+          </div>
         </div>
+
+        {style.showPhoto && personalInfo.photoUrl && (
+          <img
+            src={personalInfo.photoUrl}
+            alt={personalInfo.fullName || 'Portrait'}
+            className="w-18 h-18 rounded-md object-cover border border-black grayscale shrink-0"
+          />
+        )}
       </div>
 
       {/* Main Content */}

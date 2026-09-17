@@ -10,8 +10,8 @@ const PORT = process.env.PORT || 5001;
 
 // Middleware
 app.use(cors({ origin: '*' }));
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
 // Root Health & Status Landing Page (for Render browser preview)
 app.get('/', (_req, res) => {

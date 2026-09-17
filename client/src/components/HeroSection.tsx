@@ -31,7 +31,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
         {/* Subtitle */}
         <p className="max-w-2xl mx-auto text-sm sm:text-base text-slate-300 leading-relaxed">
-          Input your experience, choose from <strong>10 executive layouts</strong>, customize colors or switch to pure monochrome, and download a pixel-perfect <strong>PDF</strong> instantly.
+          Input your experience, choose from <strong>15 industry & executive layouts</strong>, customize colors or switch to pure monochrome, and download a pixel-perfect <strong>PDF</strong> instantly.
         </p>
 
         {/* Giant Main Button */}
@@ -51,7 +51,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-slate-800/90 hover:bg-slate-750 text-slate-200 font-bold text-sm sm:text-base border border-slate-700 hover:border-slate-600 transition flex items-center justify-center gap-2"
           >
             <Layers className="w-5 h-5 text-cyan-400" />
-            <span>Browse 10 Templates</span>
+            <span>Browse 15 Templates</span>
           </button>
         </div>
 
@@ -59,7 +59,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="pt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto text-xs text-slate-300">
           <div className="flex items-center justify-center gap-2 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800">
             <Layers className="w-4 h-4 text-sky-400 shrink-0" />
-            <span className="font-semibold">10 Pro Templates</span>
+            <span className="font-semibold">15 Pro Templates</span>
           </div>
 
           <div className="flex items-center justify-center gap-2 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800">

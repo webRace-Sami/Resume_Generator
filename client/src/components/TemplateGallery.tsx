@@ -15,7 +15,19 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
 }) => {
   const [activeCategory, setActiveCategory] = useState<string>('All');
 
-  const categories = ['All', 'Modern', 'Executive', 'Tech', 'Academic', 'Creative', 'ATS Minimal'];
+  const categories = [
+    'All',
+    'Students & Entry',
+    'Operations',
+    'Finance & Audit',
+    'Admin & Office',
+    'Modern',
+    'Executive',
+    'Tech',
+    'Academic',
+    'Creative',
+    'ATS Minimal',
+  ];
 
   const filteredTemplates = activeCategory === 'All'
     ? TEMPLATES
