@@ -267,21 +267,30 @@ export function App() {
       />
 
       {/* Footer */}
-      <footer className="w-full border-t border-slate-850 py-6 sm:py-8 px-4 text-center text-xs text-slate-500 space-y-2 no-print bg-slate-950">
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-slate-400 font-medium">
-          <button type="button" onClick={() => setIsModalOpen(true)} className="hover:text-white">
+      <footer className="w-full border-t border-slate-850 py-8 px-4 text-center text-xs text-slate-500 space-y-3.5 no-print bg-slate-950">
+        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5 text-slate-400 font-medium">
+          <button type="button" onClick={() => setIsModalOpen(true)} className="hover:text-cyan-400 transition">
             Generate / Edit Data
           </button>
-          <span>•</span>
-          <button type="button" onClick={scrollToTemplates} className="hover:text-white">
-            15 Templates
+          <span className="text-slate-700">•</span>
+          <button type="button" onClick={scrollToTemplates} className="hover:text-cyan-400 transition">
+            15 Pro Templates
           </button>
-          <span>•</span>
-          <button type="button" onClick={handleDownloadPdf} className="hover:text-white text-cyan-400 font-bold">
+          <span className="text-slate-700">•</span>
+          <button type="button" onClick={handleDownloadPdf} className="hover:text-cyan-300 text-cyan-400 font-bold transition">
             Download PDF
           </button>
         </div>
-        <p>Professional MERN + TypeScript + Vite Resume & CV Studio • Web & Android Ready</p>
+
+        <div className="pt-1 flex flex-col items-center justify-center gap-1.5 text-slate-400">
+          <p className="text-xs font-semibold text-slate-300 flex items-center justify-center gap-1.5">
+            <span>Engineered & Crafted with Precision by</span>
+            <span className="text-cyan-400 font-bold tracking-wide">WebRace Co.</span>
+          </p>
+          <p className="text-[11px] text-slate-500">
+            © {new Date().getFullYear()} <strong className="text-slate-400 font-semibold">WebRace Co.</strong> All Rights Reserved. • Professional Resume & CV Studio
+          </p>
+        </div>
       </footer>
     </div>
   );
