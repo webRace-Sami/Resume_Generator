@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ResumeData, ExperienceItem, EducationItem, SkillCategory, ProjectItem, CertificationItem, LanguageItem } from '../types/resume';
 import { SAMPLE_PROFILES, EMPTY_RESUME } from '../data/samples';
 import { processImageFile, ACCEPTED_IMAGE_EXTENSIONS } from '../services/imageUtils';
+import { useTheme } from '../context/ThemeContext';
 import {
   X,
   User,
@@ -39,10 +40,14 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
   onSave,
   onDownloadPdfNow,
 }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   const [formData, setFormData] = useState<ResumeData>(resume);
   const [activeTab, setActiveTab] = useState<string>('personal');
   const [isPhotoUploading, setIsPhotoUploading] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
+
 
   // Sync state when modal opens
   React.useEffect(() => {
@@ -329,18 +334,28 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-4xl max-h-[90vh] bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl flex flex-col overflow-hidden text-slate-100">
+      <div
+        className={`relative w-full max-w-4xl max-h-[90vh] border rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-colors ${
+          isDark
+            ? 'bg-slate-900 border-slate-700/80 text-slate-100 shadow-cyan-950/20'
+            : 'bg-white border-slate-200 text-slate-900 shadow-slate-300'
+        }`}
+      >
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900/80">
+        <div
+          className={`flex items-center justify-between px-6 py-4 border-b transition-colors ${
+            isDark ? 'border-slate-800 bg-slate-900/90' : 'border-slate-200 bg-slate-50'
+          }`}
+        >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
               <Layers className="w-5 h-5 text-slate-950" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
+              <h2 className={`text-lg font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 Resume & CV Data Builder
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                 Add your experience, skills, and education to generate in 1-click
               </p>
             </div>
@@ -351,31 +366,47 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
             <div className="relative group">
               <button
                 type="button"
-                className="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-slate-700 flex items-center gap-1.5 font-medium transition"
+                className={`text-xs px-3 py-1.5 rounded-lg border flex items-center gap-1.5 font-medium transition ${
+                  isDark
+                    ? 'bg-slate-800 hover:bg-slate-700 text-cyan-400 border-slate-700'
+                    : 'bg-slate-100 hover:bg-slate-200 text-cyan-700 border-slate-300'
+                }`}
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Load Sample Profile</span>
               </button>
-              <div className="absolute right-0 top-full mt-1 w-64 bg-slate-850 border border-slate-700 rounded-xl shadow-xl p-1.5 hidden group-hover:block z-50">
-                <div className="text-[10px] uppercase font-bold text-slate-400 px-2 py-1">Choose Preset</div>
+              <div
+                className={`absolute right-0 top-full mt-1 w-64 border rounded-xl shadow-xl p-1.5 hidden group-hover:block z-50 ${
+                  isDark
+                    ? 'bg-slate-850 border-slate-700 text-slate-100'
+                    : 'bg-white border-slate-200 text-slate-800 shadow-slate-300'
+                }`}
+              >
+                <div className={`text-[10px] uppercase font-bold px-2 py-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                  Choose Preset
+                </div>
                 {SAMPLE_PROFILES.map((sample, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => handleLoadSample(sample.data)}
-                    className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-750 text-xs flex items-center gap-2 text-slate-200 transition"
+                    className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs flex items-center gap-2 transition ${
+                      isDark ? 'hover:bg-slate-750 text-slate-200' : 'hover:bg-slate-100 text-slate-800'
+                    }`}
                   >
                     <span>{sample.icon}</span>
                     <div className="truncate">
-                      <p className="font-semibold text-white truncate">{sample.label}</p>
-                      <p className="text-[10px] text-slate-400 truncate">{sample.role}</p>
+                      <p className={`font-semibold truncate ${isDark ? 'text-white' : 'text-slate-900'}`}>{sample.label}</p>
+                      <p className={`text-[10px] truncate ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{sample.role}</p>
                     </div>
                   </button>
                 ))}
                 <button
                   type="button"
                   onClick={() => setFormData(EMPTY_RESUME)}
-                  className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-red-950/30 text-xs text-red-400 font-medium border-t border-slate-800 mt-1"
+                  className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium border-t mt-1 transition ${
+                    isDark ? 'hover:bg-red-950/30 text-red-400 border-slate-800' : 'hover:bg-red-50 text-red-600 border-slate-200'
+                  }`}
                 >
                   Clear to Blank
                 </button>
@@ -385,7 +416,11 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
+              className={`p-2 rounded-xl transition ${
+                isDark
+                  ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  : 'text-slate-400 hover:text-slate-900 hover:bg-slate-100'
+              }`}
             >
               <X className="w-5 h-5" />
             </button>
@@ -393,7 +428,11 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center gap-1 px-6 border-b border-slate-800 bg-slate-900/50 overflow-x-auto scrollbar-none py-2">
+        <div
+          className={`flex items-center gap-1 px-6 border-b overflow-x-auto scrollbar-none py-2 transition-colors ${
+            isDark ? 'border-slate-800 bg-slate-900/50' : 'border-slate-200 bg-slate-100/70'
+          }`}
+        >
           {[
             { id: 'personal', label: 'Personal Details', icon: User },
             { id: 'experience', label: 'Work Experience', icon: Briefcase, count: formData.experience.length },
@@ -412,7 +451,9 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
                 className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
                   isActive
                     ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    : isDark
+                    ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -420,7 +461,11 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
                 {typeof tab.count === 'number' && (
                   <span
                     className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                      isActive ? 'bg-slate-950/30 text-slate-950' : 'bg-slate-800 text-slate-400'
+                      isActive
+                        ? 'bg-slate-950/30 text-slate-950'
+                        : isDark
+                        ? 'bg-slate-800 text-slate-400'
+                        : 'bg-slate-200 text-slate-700'
                     }`}
                   >
                     {tab.count}
@@ -430,6 +475,7 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
             );
           })}
         </div>
+
 
         {/* Tab Content Body */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
@@ -1122,12 +1168,20 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
         </div>
 
         {/* Modal Footer Actions */}
-        <div className="px-6 py-4 border-t border-slate-800 bg-slate-900/90 flex flex-wrap items-center justify-between gap-3">
+        <div
+          className={`px-6 py-4 border-t flex flex-wrap items-center justify-between gap-3 transition-colors ${
+            isDark ? 'border-slate-800 bg-slate-900/90' : 'border-slate-200 bg-slate-50'
+          }`}
+        >
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition"
+              className={`px-4 py-2 rounded-xl text-xs font-semibold transition ${
+                isDark
+                  ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+              }`}
             >
               Cancel
             </button>
@@ -1137,16 +1191,20 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
             <button
               type="button"
               onClick={handleSaveAndClose}
-              className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-white font-semibold text-xs border border-slate-700 flex items-center gap-2 transition"
+              className={`px-5 py-2.5 rounded-xl font-semibold text-xs border flex items-center gap-2 transition ${
+                isDark
+                  ? 'bg-slate-800 hover:bg-slate-750 text-white border-slate-700'
+                  : 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300 shadow-sm'
+              }`}
             >
-              <Check className="w-4 h-4 text-emerald-400" />
+              <Check className="w-4 h-4 text-emerald-500" />
               <span>Save & View Resume</span>
             </button>
 
             <button
               type="button"
               onClick={handleSaveAndDownload}
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/25 flex items-center gap-2 transition"
+              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/25 flex items-center gap-2 transition cursor-pointer"
             >
               <FileDown className="w-4 h-4 stroke-[2.5]" />
               <span>Save & Download PDF</span>

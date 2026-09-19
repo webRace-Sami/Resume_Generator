@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TEMPLATES, TemplateDefinition } from '../types/resume';
 import { Filter, Check } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 interface TemplateGalleryProps {
   selectedTemplateId: string;
@@ -13,6 +14,8 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
   onSelectTemplate,
   accentColor,
 }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [activeCategory, setActiveCategory] = useState<string>('All');
 
   const categories = [
@@ -37,7 +40,7 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
     <div className="w-full space-y-3.5">
       {/* Category filter pills - touch scrollable on mobile */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 scrollbar-none -mx-2 px-2 sm:mx-0 sm:px-0">
-        <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-1 hidden sm:block" />
+        <Filter className={`w-3.5 h-3.5 shrink-0 ml-1 hidden sm:block ${isDark ? 'text-slate-400' : 'text-slate-500'}`} />
         {categories.map((cat) => (
           <button
             key={cat}
@@ -46,7 +49,9 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
             className={`text-xs px-3 py-1.5 rounded-full font-medium transition whitespace-nowrap border shrink-0 ${
               activeCategory === cat
                 ? 'bg-cyan-500 text-slate-950 border-cyan-400 font-bold shadow-md shadow-cyan-500/20'
-                : 'bg-slate-800/80 text-slate-400 border-slate-700 hover:text-white hover:border-slate-600'
+                : isDark
+                ? 'bg-slate-800/80 text-slate-400 border-slate-700 hover:text-white hover:border-slate-600'
+                : 'bg-white text-slate-600 border-slate-200 hover:text-slate-900 hover:border-slate-300 shadow-sm'
             }`}
           >
             {cat}
@@ -65,20 +70,26 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
               onClick={() => onSelectTemplate(template.id)}
               className={`group relative rounded-xl border p-2.5 sm:p-3.5 cursor-pointer transition-all duration-200 flex flex-col justify-between ${
                 isSelected
-                  ? 'bg-slate-800/95 border-cyan-400 ring-2 ring-cyan-500/30 shadow-lg shadow-cyan-500/10 -translate-y-0.5'
-                  : 'bg-slate-900/70 border-slate-800 hover:border-slate-700 hover:bg-slate-800/50'
+                  ? 'border-cyan-500 ring-2 ring-cyan-500/30 shadow-lg shadow-cyan-500/10 -translate-y-0.5 ' + (isDark ? 'bg-slate-800/95' : 'bg-cyan-50/70 border-cyan-500')
+                  : isDark
+                  ? 'bg-slate-900/70 border-slate-800 hover:border-slate-700 hover:bg-slate-800/50'
+                  : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-sm'
               }`}
             >
               {/* Badge */}
               <div className="flex items-center justify-between gap-1 mb-2">
-                <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 truncate">
+                <span className={`text-[9px] sm:text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded border truncate ${
+                  isDark
+                    ? 'bg-slate-800 text-slate-300 border-slate-700'
+                    : 'bg-slate-100 text-slate-700 border-slate-200'
+                }`}>
                   {template.category}
                 </span>
 
                 <span
                   className="text-[9px] sm:text-[10px] font-semibold px-1.5 py-0.5 rounded-full text-white truncate max-w-[90px] sm:max-w-none"
                   style={{
-                    backgroundColor: isSelected ? accentColor : '#334155',
+                    backgroundColor: isSelected ? accentColor : isDark ? '#334155' : '#64748b',
                   }}
                 >
                   {template.badgeText}
@@ -125,10 +136,14 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
 
               {/* Text Info */}
               <div className="mt-2">
-                <h4 className="text-[11px] sm:text-xs font-bold text-white flex items-center gap-1 group-hover:text-cyan-400 transition truncate">
+                <h4 className={`text-[11px] sm:text-xs font-bold flex items-center gap-1 group-hover:text-cyan-500 transition truncate ${
+                  isDark ? 'text-white' : 'text-slate-900'
+                }`}>
                   {template.name}
                 </h4>
-                <p className="text-[10px] sm:text-[11px] text-slate-400 line-clamp-1 mt-0.5">
+                <p className={`text-[10px] sm:text-[11px] line-clamp-1 mt-0.5 ${
+                  isDark ? 'text-slate-400' : 'text-slate-500'
+                }`}>
                   {template.tagline}
                 </p>
               </div>

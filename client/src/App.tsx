@@ -3,15 +3,20 @@ import { ResumeData, ResumeStyle } from './types/resume';
 import { SAMPLE_PROFILES, EMPTY_RESUME } from './data/samples';
 import { saveResumeToStorage, loadResumeFromStorage, syncResumeWithBackend } from './services/apiService';
 import { exportResumeToPDF } from './services/pdfService';
+import { useTheme } from './context/ThemeContext';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { TemplateGallery } from './components/TemplateGallery';
 import { ResumeRenderer } from './components/templates/ResumeRenderer';
 import { LiveEditorToolbar } from './components/LiveEditorToolbar';
 import { ResumeModal } from './components/ResumeModal';
+import { DonationModal } from './components/DonationModal';
 import { Layers, Sparkles, Check } from 'lucide-react';
 
 export function App() {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   // Initialize resume from storage or first sample profile
   const [resume, setResume] = useState<ResumeData>(() => {
     const saved = loadResumeFromStorage();
@@ -22,6 +27,7 @@ export function App() {
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
   const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
   const [downloadProgressText, setDownloadProgressText] = useState('');
   const [zoomLevel, setZoomLevel] = useState(1.0);
@@ -162,7 +168,11 @@ export function App() {
   const scaledHeight = 1123 * zoomLevel;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-white w-full overflow-x-hidden">
+    <div
+      className={`min-h-screen ${
+        isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'
+      } flex flex-col font-sans selection:bg-cyan-500 selection:text-white w-full overflow-x-hidden transition-colors duration-200`}
+    >
       {/* Toast Notification */}
       {saveToast && (
         <div className="fixed bottom-6 right-6 z-50 bg-emerald-500 text-slate-950 px-4 py-2.5 rounded-xl font-bold text-xs shadow-xl flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4">
@@ -176,6 +186,7 @@ export function App() {
         onOpenModal={() => setIsModalOpen(true)}
         onLoadProfile={handleLoadProfile}
         onResetNew={handleResetNew}
+        onOpenDonationModal={() => setIsDonationModalOpen(true)}
       />
 
       {/* Hero CTA Section */}
@@ -187,15 +198,21 @@ export function App() {
       {/* 15 Templates Selector Gallery Section */}
       <section
         ref={templatesSectionRef}
-        className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 border-t border-slate-850 no-print"
+        className={`w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 border-t no-print transition-colors ${
+          isDark ? 'border-slate-850' : 'border-slate-200'
+        }`}
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 sm:mb-6">
           <div>
-            <h2 className="text-lg sm:text-2xl font-bold text-white flex items-center gap-2">
-              <Layers className="w-5 h-5 text-cyan-400" />
+            <h2
+              className={`text-lg sm:text-2xl font-bold flex items-center gap-2 ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}
+            >
+              <Layers className="w-5 h-5 text-cyan-500" />
               <span>Choose From 15 Professional CV & Resume Layouts</span>
             </h2>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               Select any design below — your information stays completely intact across all templates.
             </p>
           </div>
@@ -203,7 +220,7 @@ export function App() {
           <button
             type="button"
             onClick={() => setIsModalOpen(true)}
-            className="self-start sm:self-auto text-xs text-cyan-400 hover:text-cyan-300 font-semibold flex items-center gap-1.5"
+            className="self-start sm:self-auto text-xs text-cyan-500 hover:text-cyan-400 font-semibold flex items-center gap-1.5"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Customize Data in Popup</span>
@@ -266,29 +283,47 @@ export function App() {
         onDownloadPdfNow={handleDownloadPdf}
       />
 
+      {/* Donation Popup Modal */}
+      <DonationModal
+        isOpen={isDonationModalOpen}
+        onClose={() => setIsDonationModalOpen(false)}
+      />
+
       {/* Footer */}
-      <footer className="w-full border-t border-slate-850 py-8 px-4 text-center text-xs text-slate-500 space-y-3.5 no-print bg-slate-950">
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5 text-slate-400 font-medium">
-          <button type="button" onClick={() => setIsModalOpen(true)} className="hover:text-cyan-400 transition">
+      <footer
+        className={`w-full border-t py-8 px-4 text-center text-xs space-y-3.5 no-print transition-colors ${
+          isDark ? 'bg-slate-950 border-slate-850 text-slate-500' : 'bg-white border-slate-200 text-slate-600'
+        }`}
+      >
+        <div className={`flex flex-wrap items-center justify-center gap-3 sm:gap-5 font-medium ${
+          isDark ? 'text-slate-400' : 'text-slate-600'
+        }`}>
+          <button type="button" onClick={() => setIsModalOpen(true)} className="hover:text-cyan-500 transition">
             Generate / Edit Data
           </button>
-          <span className="text-slate-700">•</span>
-          <button type="button" onClick={scrollToTemplates} className="hover:text-cyan-400 transition">
+          <span className={isDark ? 'text-slate-700' : 'text-slate-300'}>•</span>
+          <button type="button" onClick={scrollToTemplates} className="hover:text-cyan-500 transition">
             15 Pro Templates
           </button>
-          <span className="text-slate-700">•</span>
-          <button type="button" onClick={handleDownloadPdf} className="hover:text-cyan-300 text-cyan-400 font-bold transition">
+          <span className={isDark ? 'text-slate-700' : 'text-slate-300'}>•</span>
+          <button type="button" onClick={handleDownloadPdf} className="hover:text-cyan-400 text-cyan-500 font-bold transition">
             Download PDF
+          </button>
+          <span className={isDark ? 'text-slate-700' : 'text-slate-300'}>•</span>
+          <button type="button" onClick={() => setIsDonationModalOpen(true)} className="hover:text-emerald-500 text-emerald-500 font-bold transition flex items-center gap-1">
+            <span>Support & Donate</span>
           </button>
         </div>
 
-        <div className="pt-1 flex flex-col items-center justify-center gap-1.5 text-slate-400">
-          <p className="text-xs font-semibold text-slate-300 flex items-center justify-center gap-1.5">
+        <div className="pt-1 flex flex-col items-center justify-center gap-1.5">
+          <p className={`text-xs font-semibold flex items-center justify-center gap-1.5 ${
+            isDark ? 'text-slate-300' : 'text-slate-700'
+          }`}>
             <span>Engineered & Crafted with Precision by</span>
-            <span className="text-cyan-400 font-bold tracking-wide">WebRace Co.</span>
+            <span className="text-cyan-500 font-bold tracking-wide">WebRace Co.</span>
           </p>
-          <p className="text-[11px] text-slate-500">
-            © {new Date().getFullYear()} <strong className="text-slate-400 font-semibold">WebRace Co.</strong> All Rights Reserved. • Professional Resume & CV Studio
+          <p className={`text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+            © {new Date().getFullYear()} <strong className={`font-semibold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>WebRace Co.</strong> All Rights Reserved. • Professional Resume & CV Studio
           </p>
         </div>
       </footer>
@@ -297,3 +332,4 @@ export function App() {
 }
 
 export default App;
+

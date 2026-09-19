@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ResumeData, FontFamilyOption, FontSizeOption, SpacingOption } from '../types/resume';
 import { ColorPicker } from './ColorPicker';
 import { processImageFile, ACCEPTED_IMAGE_EXTENSIONS } from '../services/imageUtils';
+import { useTheme } from '../context/ThemeContext';
 import {
   Edit3,
   FileDown,
@@ -41,6 +42,9 @@ export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
   onFitToScreen,
   onUpdatePhoto,
 }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showTypography, setShowTypography] = useState(false);
   const [isPhotoUploading, setIsPhotoUploading] = useState(false);
@@ -78,14 +82,20 @@ export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
 
   return (
     <div className="sticky top-2 sm:top-4 z-40 w-full max-w-5xl mx-auto px-2 sm:px-4 no-print">
-      <div className="bg-slate-900/95 border border-slate-750/90 rounded-xl sm:rounded-2xl p-2 sm:p-3 shadow-2xl backdrop-blur-xl flex items-center justify-between gap-1.5 sm:gap-2.5 overflow-x-auto scrollbar-none">
+      <div
+        className={`border rounded-xl sm:rounded-2xl p-2 sm:p-3 shadow-2xl backdrop-blur-xl flex items-center justify-between gap-1.5 sm:gap-2.5 overflow-x-auto scrollbar-none transition-colors ${
+          isDark
+            ? 'bg-slate-900/95 border-slate-750/90 text-white shadow-cyan-950/20'
+            : 'bg-white/95 border-slate-200 text-slate-900 shadow-slate-300'
+        }`}
+      >
         {/* Left: Edit Data & Styling */}
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           {/* Big Edit Data Button */}
           <button
             type="button"
             onClick={onOpenEditModal}
-            className="px-3 sm:px-4 py-2 rounded-lg sm:rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center gap-1.5 shadow-lg shadow-cyan-500/20 transition group shrink-0"
+            className="px-3 sm:px-4 py-2 rounded-lg sm:rounded-xl bg-gradient-to-r from-cyan-500 to-sky-500 hover:from-cyan-400 hover:to-sky-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center gap-1.5 shadow-lg shadow-cyan-500/20 transition group shrink-0 cursor-pointer"
           >
             <Edit3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5] group-hover:rotate-12 transition-transform" />
             <span>Edit Data</span>
@@ -101,8 +111,12 @@ export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
               }}
               className={`p-2 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition ${
                 showColorPicker
-                  ? 'bg-slate-800 text-cyan-400 border-cyan-500/50'
-                  : 'bg-slate-850 hover:bg-slate-800 text-slate-200 border-slate-700'
+                  ? isDark
+                    ? 'bg-slate-800 text-cyan-400 border-cyan-500/50'
+                    : 'bg-cyan-50 text-cyan-700 border-cyan-400'
+                  : isDark
+                  ? 'bg-slate-850 hover:bg-slate-800 text-slate-200 border-slate-700'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
               }`}
             >
               <div
@@ -137,8 +151,12 @@ export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
               }}
               className={`p-2 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition ${
                 showTypography
-                  ? 'bg-slate-800 text-cyan-400 border-cyan-500/50'
-                  : 'bg-slate-850 hover:bg-slate-800 text-slate-200 border-slate-700'
+                  ? isDark
+                    ? 'bg-slate-800 text-cyan-400 border-cyan-500/50'
+                    : 'bg-cyan-50 text-cyan-700 border-cyan-400'
+                  : isDark
+                  ? 'bg-slate-850 hover:bg-slate-800 text-slate-200 border-slate-700'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
               }`}
             >
               <Type className="w-3.5 h-3.5" />
@@ -147,15 +165,29 @@ export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
 
             {/* Typography Popover */}
             {showTypography && (
-              <div className="absolute left-0 top-full mt-2 w-72 bg-slate-900 border border-slate-750 rounded-xl p-4 shadow-xl z-50 space-y-3.5">
+              <div
+                className={`absolute left-0 top-full mt-2 w-72 border rounded-xl p-4 shadow-xl z-50 space-y-3.5 transition-colors ${
+                  isDark
+                    ? 'bg-slate-900 border-slate-750 text-slate-100'
+                    : 'bg-white border-slate-200 text-slate-800 shadow-slate-300'
+                }`}
+              >
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                  <label
+                    className={`block text-[11px] font-bold uppercase tracking-wider mb-1.5 ${
+                      isDark ? 'text-slate-400' : 'text-slate-600'
+                    }`}
+                  >
                     Font Family
                   </label>
                   <select
                     value={resume.style.fontFamily}
                     onChange={(e) => onChangeStyle({ fontFamily: e.target.value as FontFamilyOption })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"
+                    className={`w-full border rounded-lg px-2.5 py-1.5 text-xs ${
+                      isDark
+                        ? 'bg-slate-800 border-slate-700 text-white'
+                        : 'bg-slate-50 border-slate-300 text-slate-900'
+                    }`}
                   >
                     {fonts.map((f) => (
                       <option key={f} value={f}>
@@ -167,13 +199,21 @@ export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                    <label
+                      className={`block text-[10px] font-bold uppercase tracking-wider mb-1 ${
+                        isDark ? 'text-slate-400' : 'text-slate-600'
+                      }`}
+                    >
                       Text Size
                     </label>
                     <select
                       value={resume.style.fontSize}
                       onChange={(e) => onChangeStyle({ fontSize: e.target.value as FontSizeOption })}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white"
+                      className={`w-full border rounded-lg px-2 py-1 text-xs ${
+                        isDark
+                          ? 'bg-slate-800 border-slate-700 text-white'
+                          : 'bg-slate-50 border-slate-300 text-slate-900'
+                      }`}
                     >
                       <option value="compact">Compact (1 Page)</option>
                       <option value="normal">Standard</option>
@@ -181,13 +221,21 @@ export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                    <label
+                      className={`block text-[10px] font-bold uppercase tracking-wider mb-1 ${
+                        isDark ? 'text-slate-400' : 'text-slate-600'
+                      }`}
+                    >
                       Spacing
                     </label>
                     <select
                       value={resume.style.spacing}
                       onChange={(e) => onChangeStyle({ spacing: e.target.value as SpacingOption })}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white"
+                      className={`w-full border rounded-lg px-2 py-1 text-xs ${
+                        isDark
+                          ? 'bg-slate-800 border-slate-700 text-white'
+                          : 'bg-slate-50 border-slate-300 text-slate-900'
+                      }`}
                     >
                       <option value="tight">Tight</option>
                       <option value="normal">Normal</option>
@@ -196,8 +244,12 @@ export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
-                  <span className="text-xs text-slate-300">Show Profile Photo</span>
+                <div
+                  className={`pt-2 border-t flex items-center justify-between ${
+                    isDark ? 'border-slate-800 text-slate-300' : 'border-slate-200 text-slate-700'
+                  }`}
+                >
+                  <span className="text-xs">Show Profile Photo</span>
                   <input
                     type="checkbox"
                     checked={resume.style.showPhoto}
@@ -214,11 +266,15 @@ export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
             <button
               type="button"
               onClick={() => onChangeStyle({ showPhoto: !resume.style.showPhoto })}
-              title={resume.style.showPhoto ? "Hide Profile Photo" : "Show Profile Photo"}
+              title={resume.style.showPhoto ? 'Hide Profile Photo' : 'Show Profile Photo'}
               className={`p-2 rounded-lg sm:rounded-xl border text-xs flex items-center transition ${
                 resume.style.showPhoto
-                  ? 'bg-slate-800 text-cyan-400 border-slate-700'
-                  : 'bg-slate-850 text-slate-500 border-slate-800 hover:text-slate-300'
+                  ? isDark
+                    ? 'bg-slate-800 text-cyan-400 border-slate-700'
+                    : 'bg-cyan-50 text-cyan-700 border-cyan-300'
+                  : isDark
+                  ? 'bg-slate-850 text-slate-500 border-slate-800 hover:text-slate-300'
+                  : 'bg-slate-100 text-slate-400 border-slate-200 hover:text-slate-700'
               }`}
             >
               <ImageIcon className="w-3.5 h-3.5" />
@@ -226,11 +282,15 @@ export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
 
             {onUpdatePhoto && (
               <label
-                className="p-2 rounded-lg sm:rounded-xl border border-slate-800 bg-slate-850 hover:bg-slate-800 hover:border-slate-700 text-slate-400 hover:text-cyan-400 text-xs flex items-center cursor-pointer transition"
+                className={`p-2 rounded-lg sm:rounded-xl border text-xs flex items-center cursor-pointer transition ${
+                  isDark
+                    ? 'border-slate-800 bg-slate-850 hover:bg-slate-800 hover:border-slate-700 text-slate-400 hover:text-cyan-400'
+                    : 'border-slate-200 bg-slate-100 hover:bg-slate-200 hover:border-slate-300 text-slate-600 hover:text-cyan-600'
+                }`}
                 title="Upload/Replace Photo (JPG, JPEG, PNG, WEBP, SVG, etc.)"
               >
                 {isPhotoUploading ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-400" />
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-500" />
                 ) : (
                   <Upload className="w-3.5 h-3.5" />
                 )}
@@ -247,20 +307,30 @@ export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
         </div>
 
         {/* Center: Zoom & Auto-Fit Controls */}
-        <div className="flex items-center gap-1 bg-slate-850 px-1.5 sm:px-2 py-1 rounded-lg sm:rounded-xl border border-slate-750 text-slate-300 shrink-0">
+        <div
+          className={`flex items-center gap-1 px-1.5 sm:px-2 py-1 rounded-lg sm:rounded-xl border shrink-0 ${
+            isDark
+              ? 'bg-slate-850 border-slate-750 text-slate-300'
+              : 'bg-slate-100 border-slate-250 text-slate-700'
+          }`}
+        >
           <button
             type="button"
             onClick={() => onZoomChange(Math.max(0.3, zoomLevel - 0.08))}
-            className="p-1 hover:text-white rounded"
+            className={`p-1 rounded ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}
             title="Zoom Out"
           >
             <ZoomOut className="w-3.5 h-3.5" />
           </button>
-          
+
           <button
             type="button"
             onClick={onFitToScreen}
-            className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-slate-700 flex items-center gap-1"
+            className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border flex items-center gap-1 ${
+              isDark
+                ? 'bg-slate-800 hover:bg-slate-700 text-cyan-400 border-slate-700'
+                : 'bg-white hover:bg-slate-50 text-cyan-700 border-slate-200 shadow-xs'
+            }`}
             title="Auto-Fit to Screen Width"
           >
             <Maximize className="w-2.5 h-2.5" />
@@ -271,7 +341,7 @@ export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
           <button
             type="button"
             onClick={() => onZoomChange(Math.min(1.4, zoomLevel + 0.08))}
-            className="p-1 hover:text-white rounded"
+            className={`p-1 rounded ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}
             title="Zoom In"
           >
             <ZoomIn className="w-3.5 h-3.5" />
@@ -284,7 +354,11 @@ export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
             type="button"
             onClick={handlePrint}
             title="Print Resume"
-            className="p-2 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-slate-850 hover:bg-slate-800 text-slate-300 border border-slate-700 text-xs font-semibold flex items-center gap-1.5 transition hidden sm:flex"
+            className={`p-2 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition hidden sm:flex ${
+              isDark
+                ? 'bg-slate-850 hover:bg-slate-800 text-slate-300 border-slate-700'
+                : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+            }`}
           >
             <Printer className="w-3.5 h-3.5" />
             <span className="hidden md:inline">Print</span>
@@ -295,7 +369,7 @@ export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
             type="button"
             disabled={isDownloadingPdf}
             onClick={onDownloadPdf}
-            className="px-3.5 sm:px-5 py-2 rounded-lg sm:rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-500 hover:from-emerald-300 hover:to-cyan-400 text-slate-950 font-extrabold text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 shadow-lg shadow-cyan-500/25 transition disabled:opacity-75 cursor-pointer shrink-0"
+            className="px-3.5 sm:px-5 py-2 rounded-lg sm:rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-extrabold text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 shadow-lg shadow-cyan-500/25 transition disabled:opacity-75 cursor-pointer shrink-0"
           >
             {isDownloadingPdf ? (
               <>
@@ -316,3 +390,4 @@ export const LiveEditorToolbar: React.FC<LiveEditorToolbarProps> = ({
     </div>
   );
 };
+
