@@ -15,6 +15,11 @@ import { SupplyChainLogisticsTemplate } from './SupplyChainLogisticsTemplate';
 import { AuditorComplianceTemplate } from './AuditorComplianceTemplate';
 import { ComputerOperatorTemplate } from './ComputerOperatorTemplate';
 import { MsOfficeExecutiveTemplate } from './MsOfficeExecutiveTemplate';
+import { VibrantGradientTemplate } from './VibrantGradientTemplate';
+import { VividDuotoneTemplate } from './VividDuotoneTemplate';
+import { EmeraldMintTemplate } from './EmeraldMintTemplate';
+import { SunsetCoralTemplate } from './SunsetCoralTemplate';
+import { NeonTechTemplate } from './NeonTechTemplate';
 
 export const ResumeRenderer: React.FC<{ resume: ResumeData; elementId?: string }> = ({
   resume,
@@ -22,6 +27,16 @@ export const ResumeRenderer: React.FC<{ resume: ResumeData; elementId?: string }
 }) => {
   const renderTemplate = () => {
     switch (resume.templateId) {
+      case 'vibrant-gradient-header':
+        return <VibrantGradientTemplate resume={resume} />;
+      case 'vivid-duotone-accent':
+        return <VividDuotoneTemplate resume={resume} />;
+      case 'emerald-mint-fresh':
+        return <EmeraldMintTemplate resume={resume} />;
+      case 'sunset-coral-bold':
+        return <SunsetCoralTemplate resume={resume} />;
+      case 'neon-tech-cyber':
+        return <NeonTechTemplate resume={resume} />;
       case 'fresh-graduate-student':
         return <FreshGraduateStudentTemplate resume={resume} />;
       case 'supply-chain-logistics':
@@ -62,3 +77,4 @@ export const ResumeRenderer: React.FC<{ resume: ResumeData; elementId?: string }
     </div>
   );
 };
+

@@ -59,7 +59,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             isDark ? 'text-slate-300' : 'text-slate-600'
           }`}
         >
-          Input your experience, choose from <strong>15 industry & executive layouts</strong>, customize colors or switch to pure monochrome, and download a pixel-perfect <strong>PDF</strong> instantly.
+          Input your experience, choose from <strong>20 colorful, modern & executive layouts</strong>, customize colors or switch to pure monochrome, and download a pixel-perfect <strong>PDF</strong> instantly.
         </p>
 
         {/* Giant Main Button */}
@@ -83,7 +83,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             }`}
           >
             <Layers className="w-5 h-5 text-cyan-500" />
-            <span>Browse 15 Templates</span>
+            <span>Browse 20 Templates</span>
           </button>
         </div>
 
@@ -99,8 +99,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             }`}
           >
             <Layers className="w-4 h-4 text-sky-500 shrink-0" />
-            <span className="font-semibold">15 Pro Templates</span>
+            <span className="font-semibold">20 Pro Templates</span>
           </div>
+
 
           <div
             className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border transition ${

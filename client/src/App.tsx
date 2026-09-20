@@ -210,7 +210,7 @@ export function App() {
               }`}
             >
               <Layers className="w-5 h-5 text-cyan-500" />
-              <span>Choose From 15 Professional CV & Resume Layouts</span>
+              <span>Choose From 20 Professional CV & Resume Layouts</span>
             </h2>
             <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               Select any design below — your information stays completely intact across all templates.
@@ -303,12 +303,13 @@ export function App() {
           </button>
           <span className={isDark ? 'text-slate-700' : 'text-slate-300'}>•</span>
           <button type="button" onClick={scrollToTemplates} className="hover:text-cyan-500 transition">
-            15 Pro Templates
+            20 Pro Templates
           </button>
           <span className={isDark ? 'text-slate-700' : 'text-slate-300'}>•</span>
           <button type="button" onClick={handleDownloadPdf} className="hover:text-cyan-400 text-cyan-500 font-bold transition">
             Download PDF
           </button>
+
           <span className={isDark ? 'text-slate-700' : 'text-slate-300'}>•</span>
           <button type="button" onClick={() => setIsDonationModalOpen(true)} className="hover:text-emerald-500 text-emerald-500 font-bold transition flex items-center gap-1">
             <span>Support & Donate</span>

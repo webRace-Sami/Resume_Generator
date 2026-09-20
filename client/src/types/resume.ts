@@ -116,7 +116,8 @@ export interface TemplateDefinition {
     | 'Students & Entry'
     | 'Operations'
     | 'Finance & Audit'
-    | 'Admin & Office';
+    | 'Admin & Office'
+    | 'Colorful & Vibrant';
   badgeText: string;
   previewGradient: string;
   supportsPhoto: boolean;
@@ -143,6 +144,56 @@ export const COLOR_PRESETS: ColorPreset[] = [
 ];
 
 export const TEMPLATES: TemplateDefinition[] = [
+  {
+    id: 'vibrant-gradient-header',
+    name: 'Prism Vibrant Gradient',
+    tagline: 'Multi-color sunset & electric prism top banner',
+    description: 'Dynamic gradient header with glowing contact chips, soft tinted skill boxes, and high-impact timeline cards.',
+    category: 'Colorful & Vibrant',
+    badgeText: 'Vibrant Prism',
+    previewGradient: 'from-fuchsia-500 via-rose-500 to-amber-400',
+    supportsPhoto: true,
+  },
+  {
+    id: 'vivid-duotone-accent',
+    name: 'Vivid Duotone Infographic',
+    tagline: 'Dual-tone vertical sidebar with neon accent pills',
+    description: 'Rich dual-tone gradient sidebar, rounded photo frame with active badge, and modern milestone project cards.',
+    category: 'Colorful & Vibrant',
+    badgeText: 'Vivid Duotone',
+    previewGradient: 'from-violet-600 via-blue-500 to-cyan-400',
+    supportsPhoto: true,
+  },
+  {
+    id: 'emerald-mint-fresh',
+    name: 'Emerald Mint Botanical',
+    tagline: 'Refreshing mint & botanical forest growth palette',
+    description: 'Fresh emerald ribbon headers, soft mint background cards, and crisp diamond bullet nodes for modern leaders.',
+    category: 'Colorful & Vibrant',
+    badgeText: 'Mint Growth',
+    previewGradient: 'from-emerald-500 via-teal-500 to-cyan-400',
+    supportsPhoto: true,
+  },
+  {
+    id: 'sunset-coral-bold',
+    name: 'Sunset Coral & Warm Amber',
+    tagline: 'Warm energetic coral, rose & golden amber gradient',
+    description: 'Radiant sunset gradient header, warm tinted metadata badges, and contrasting dark-slate content hierarchy.',
+    category: 'Colorful & Vibrant',
+    badgeText: 'Sunset Coral',
+    previewGradient: 'from-rose-500 via-pink-500 to-amber-400',
+    supportsPhoto: true,
+  },
+  {
+    id: 'neon-tech-cyber',
+    name: 'Cyber Neon & Electric Violet',
+    tagline: 'High-contrast cyber header with glowing tech tags',
+    description: 'Futuristic dark-ink header with electric cyan & neon violet badges, monospace terminal accents, and tech matrix.',
+    category: 'Colorful & Vibrant',
+    badgeText: 'Cyber Neon',
+    previewGradient: 'from-cyan-400 via-indigo-600 to-purple-700',
+    supportsPhoto: true,
+  },
   {
     id: 'modern-clean',
     name: 'Modern Clean',
@@ -294,3 +345,4 @@ export const TEMPLATES: TemplateDefinition[] = [
     supportsPhoto: true,
   },
 ];
+

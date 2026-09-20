@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TEMPLATES, TemplateDefinition } from '../types/resume';
-import { Filter, Check } from 'lucide-react';
+import { Filter, Check, Sparkles } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 interface TemplateGalleryProps {
@@ -20,6 +20,7 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
 
   const categories = [
     'All',
+    'Colorful & Vibrant',
     'Students & Entry',
     'Operations',
     'Finance & Audit',
@@ -46,7 +47,7 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
             key={cat}
             type="button"
             onClick={() => setActiveCategory(cat)}
-            className={`text-xs px-3 py-1.5 rounded-full font-medium transition whitespace-nowrap border shrink-0 ${
+            className={`text-xs px-3 py-1.5 rounded-full font-medium transition whitespace-nowrap border shrink-0 flex items-center gap-1 ${
               activeCategory === cat
                 ? 'bg-cyan-500 text-slate-950 border-cyan-400 font-bold shadow-md shadow-cyan-500/20'
                 : isDark
@@ -54,7 +55,8 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
                 : 'bg-white text-slate-600 border-slate-200 hover:text-slate-900 hover:border-slate-300 shadow-sm'
             }`}
           >
-            {cat}
+            {cat === 'Colorful & Vibrant' && <Sparkles className="w-3 h-3 text-amber-400 fill-amber-400" />}
+            <span>{cat}</span>
           </button>
         ))}
       </div>
@@ -87,7 +89,7 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
                 </span>
 
                 <span
-                  className="text-[9px] sm:text-[10px] font-semibold px-1.5 py-0.5 rounded-full text-white truncate max-w-[90px] sm:max-w-none"
+                  className="text-[9px] sm:text-[10px] font-semibold px-1.5 py-0.5 rounded-full text-white truncate max-w-[90px] sm:max-w-none shadow-xs"
                   style={{
                     backgroundColor: isSelected ? accentColor : isDark ? '#334155' : '#64748b',
                   }}
@@ -101,8 +103,7 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
                 {/* Header Mock */}
                 <div className="space-y-1">
                   <div
-                    className="h-1.5 sm:h-2 rounded w-2/3"
-                    style={{ backgroundColor: isSelected ? accentColor : '#0f172a' }}
+                    className={`h-2 sm:h-3 rounded w-full bg-gradient-to-r ${template.previewGradient}`}
                   />
                   <div className="h-1 rounded w-1/3 bg-slate-300" />
                 </div>
@@ -154,3 +155,4 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
     </div>
   );
 };
+
