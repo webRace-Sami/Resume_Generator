@@ -299,7 +299,7 @@ export function App() {
           isDark ? 'text-slate-400' : 'text-slate-600'
         }`}>
           <button type="button" onClick={() => setIsModalOpen(true)} className="hover:text-cyan-500 transition">
-            Generate / Edit Data
+            Edit Data
           </button>
           <span className={isDark ? 'text-slate-700' : 'text-slate-300'}>•</span>
           <button type="button" onClick={scrollToTemplates} className="hover:text-cyan-500 transition">

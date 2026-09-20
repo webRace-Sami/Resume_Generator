@@ -185,19 +185,20 @@ export const Navbar: React.FC<NavbarProps> = ({
               )}
             </div>
 
-            {/* Big Build / Edit Resume Button */}
+            {/* Edit Resume Button - Icon only on small devices, text on sm+ */}
             <button
               type="button"
               onClick={onOpenModal}
-              className="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-slate-950 font-bold text-[11px] sm:text-xs shadow-md shadow-cyan-500/25 flex items-center gap-1 sm:gap-1.5 transition active:scale-95 cursor-pointer shrink-0"
+              title="Edit Resume Data"
+              className="p-2 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-slate-950 font-bold text-xs shadow-md shadow-cyan-500/25 flex items-center justify-center gap-1.5 transition active:scale-95 cursor-pointer shrink-0"
             >
-              <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-slate-950 shrink-0" />
-              <span className="hidden sm:inline">Generate / Edit</span>
-              <span className="sm:hidden">Edit</span>
+              <Sparkles className="w-4 h-4 fill-slate-950 shrink-0" />
+              <span className="hidden sm:inline">Edit Data</span>
             </button>
           </div>
         </div>
       </nav>
+
 
       {/* Android & Mobile Info Modal */}
       {showAndroidModal && (
